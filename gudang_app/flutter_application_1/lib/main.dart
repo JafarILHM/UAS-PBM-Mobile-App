@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart'; // Mengimpor halaman login
+import 'login_page.dart'; // Panggil halaman login
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Gudang App',
-      theme: ThemeData(primarySwatch: Colors.indigo, useMaterial3: true),
-      // Arahkan home ke LoginPage yang ada di file terpisah
-      home: const LoginPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.indigo, // Warna tema biru profesional
+        useMaterial3: true,
+      ),
+      home: const LoginPage(), // Halaman pertama kali dibuka
       debugShowCheckedModeBanner: false,
     );
   }

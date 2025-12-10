@@ -12,27 +12,37 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
+  // Pilihan Role
   String _selectedRole = 'Operator';
 
   void _register() {
+    // Validasi Password Sama
     if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Password tidak sama!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password dan Ulangi Password tidak sama!'),
+        ),
+      );
       return;
     }
 
+    // Validasi Input Kosong
     if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Data tidak boleh kosong!')));
+      ).showSnackBar(const SnackBar(content: Text('Mohon isi semua data!')));
       return;
     }
 
+    // --- Simulasi Sukses ---
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Pendaftaran Berhasil! Silakan Login.')),
+      const SnackBar(
+        content: Text('Registrasi Berhasil! Silakan Login.'),
+        backgroundColor: Colors.green,
+      ),
     );
 
+    // Kembali ke halaman Login
     Navigator.pop(context);
   }
 
@@ -45,6 +55,8 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const Icon(Icons.person_add, size: 80, color: Colors.indigo),
+            const SizedBox(height: 16),
             const Text(
               "Buat Akun Karyawan",
               style: TextStyle(
@@ -52,29 +64,37 @@ class _RegisterPageState extends State<RegisterPage> {
                 fontWeight: FontWeight.bold,
                 color: Colors.indigo,
               ),
-              textAlign: TextAlign.center, // <--- SUDAH DIPERBAIKI
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
+
+            // Input Username
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Username Baru",
-                prefixIcon: Icon(Icons.person_add),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.person_outline),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 16),
+
+            // Dropdown Pilih Jabatan (Role)
             DropdownButtonFormField<String>(
               value: _selectedRole,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Posisi / Jabatan",
-                prefixIcon: Icon(Icons.work),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.work_outline),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               items: const [
                 DropdownMenuItem(
                   value: "Operator",
-                  child: Text("Staff Operator"),
+                  child: Text("Staff Operator (Gudang)"),
                 ),
                 DropdownMenuItem(
                   value: "Admin",
@@ -87,35 +107,54 @@ class _RegisterPageState extends State<RegisterPage> {
                 });
               },
             ),
+
             const SizedBox(height: 16),
+
+            // Input Password
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Password",
-                prefixIcon: Icon(Icons.lock_outline),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.lock_outline),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 16),
+
+            // Konfirmasi Password
             TextField(
               controller: _confirmPasswordController,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: "Ulangi Password",
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.check_circle_outline),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _register,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+
+            // Tombol Daftar
+            SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _register,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  "DAFTAR SEKARANG",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-              child: const Text("DAFTAR SEKARANG"),
             ),
           ],
         ),
