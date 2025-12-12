@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'services/login_page.dart';
 import 'services/pages/item_list_page.dart';
 import 'services/pages/category_list_page.dart';
 import 'services/pages/unit_list_page.dart';
@@ -19,14 +20,20 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'SF Pro Display',
       ),
-      home: HomePage(),
+      home: const LoginPage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  final String token;
+  const HomePage({super.key, required this.token});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -248,7 +255,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ItemListPage(token: "test-token"),
+                          builder: (_) => ItemListPage(token: widget.token),
                         ),
                       );
                     },
@@ -327,7 +334,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CategoryListPage(token: "test-token"),
+                          builder: (_) => CategoryListPage(token: widget.token),
                         ),
                       );
                     },
@@ -343,7 +350,7 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => UnitListPage(token: "test-token"),
+                          builder: (_) => UnitListPage(token: widget.token),
                         ),
                       );
                     },
@@ -359,7 +366,23 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => SupplierPage(token: "test-token"),
+                          builder: (_) => SupplierPage(token: widget.token),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildMenuCard(
+                    context: context,
+                    icon: Icons.logout,
+                    title: "Logout",
+                    subtitle: "Keluar dari sesi saat ini",
+                    color: Colors.red,
+                    delay: 300,
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LoginPage(),
                         ),
                       );
                     },
