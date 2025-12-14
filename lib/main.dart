@@ -7,13 +7,15 @@ import 'core/theme.dart';
 // Import Providers
 import 'providers/auth_provider.dart';
 import 'providers/category_provider.dart';
-import 'providers/supplier_provider.dart'; 
+import 'providers/supplier_provider.dart';
+import 'providers/unit_provider.dart'; 
 
 // Import Pages
 import 'pages/login_page.dart';
 import 'pages/dashboard_page.dart';
 import 'pages/category_list_page.dart';
-import 'pages/supplier_list_page.dart';   
+import 'pages/supplier_list_page.dart';
+import 'pages/unit_list_page.dart';   
 
 void main() {
   runApp(
@@ -24,9 +26,10 @@ void main() {
 
         // Provider untuk Master Data
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
-        ChangeNotifierProvider(create: (_) => SupplierProvider()), 
+        ChangeNotifierProvider(create: (_) => SupplierProvider()),
+        ChangeNotifierProvider(create: (_) => UnitProvider()), 
         
-        // Nanti tambah UnitProvider dan ItemProvider di sini...
+        // Nanti tambah ItemProvider di sini...
       ],
       child: const MyApp(),
     ),
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aplikasi Gudang',
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false, // Hilangkan banner debug
       
       // Menggunakan Tema AdminKit
       theme: AdminKitTheme.themeData, 
@@ -55,10 +58,10 @@ class MyApp extends StatelessWidget {
         
         // --- MASTER DATA ---
         '/categories': (context) => const CategoryListPage(),
-        '/suppliers': (context) => const SupplierListPage(), // 4. Route Supplier sudah aktif
+        '/suppliers': (context) => const SupplierListPage(),
+        '/units': (context) => const UnitListPage(), // 4. Route Unit sudah aktif
         
         // --- PLACEHOLDERS (Belum Dibuat) ---
-        '/units': (context) => const Scaffold(body: Center(child: Text("Halaman Unit (Belum Dibuat)"))),
         '/items': (context) => const Scaffold(body: Center(child: Text("Halaman Barang (Belum Dibuat)"))),
         
         // --- TRANSAKSI ---
