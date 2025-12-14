@@ -9,7 +9,8 @@ import 'providers/auth_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/supplier_provider.dart';
 import 'providers/unit_provider.dart';
-import 'providers/item_provider.dart'; 
+import 'providers/item_provider.dart';
+import 'providers/transaction_provider.dart'; 
 
 // Import Pages
 import 'pages/login_page.dart';
@@ -17,7 +18,9 @@ import 'pages/dashboard_page.dart';
 import 'pages/category_list_page.dart';
 import 'pages/supplier_list_page.dart';
 import 'pages/unit_list_page.dart';
-import 'pages/item_list_page.dart';    
+import 'pages/item_list_page.dart';
+import 'pages/incoming_form_page.dart';       
+import 'pages/outgoing_form_page.dart';       
 
 void main() {
   runApp(
@@ -30,7 +33,10 @@ void main() {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => SupplierProvider()),
         ChangeNotifierProvider(create: (_) => UnitProvider()),
-        ChangeNotifierProvider(create: (_) => ItemProvider()), 
+        ChangeNotifierProvider(create: (_) => ItemProvider()),
+        
+        // Provider untuk Transaksi
+        ChangeNotifierProvider(create: (_) => TransactionProvider()), 
       ],
       child: const MyApp(),
     ),
@@ -61,11 +67,11 @@ class MyApp extends StatelessWidget {
         '/categories': (context) => const CategoryListPage(),
         '/suppliers': (context) => const SupplierListPage(),
         '/units': (context) => const UnitListPage(),
-        '/items': (context) => const ItemListPage(), 
+        '/items': (context) => const ItemListPage(),
         
-        // --- TRANSAKSI (Placeholder - Akan dibuat setelah ini) ---
-        '/incoming': (context) => const Scaffold(body: Center(child: Text("Barang Masuk (Belum Dibuat)"))),
-        '/outgoing': (context) => const Scaffold(body: Center(child: Text("Barang Keluar (Belum Dibuat)"))),
+        // --- TRANSAKSI ---
+        '/incoming': (context) => const IncomingFormPage(), 
+        '/outgoing': (context) => const OutgoingFormPage(), 
         
         // --- PROFILE (Placeholder) ---
         '/profile': (context) => const Scaffold(body: Center(child: Text("Profile (Belum Dibuat)"))),
