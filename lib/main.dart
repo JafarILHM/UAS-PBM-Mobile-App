@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 // Import Core & Theme
 import 'core/theme.dart';
+
 // Import Providers
 import 'providers/auth_provider.dart';
 import 'providers/category_provider.dart';
+import 'providers/supplier_provider.dart'; 
+
 // Import Pages
 import 'pages/login_page.dart';
 import 'pages/dashboard_page.dart';
 import 'pages/category_list_page.dart';
+import 'pages/supplier_list_page.dart';   
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        // 1. Provider untuk Login/Auth
+        // Provider untuk Login/Auth
         ChangeNotifierProvider(create: (_) => AuthProvider()),
 
-        // 2. Provider untuk Kategori (BARU DITAMBAHKAN)
+        // Provider untuk Master Data
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ChangeNotifierProvider(create: (_) => SupplierProvider()), 
         
-        // Nanti tambah ItemProvider, SupplierProvider, dll di sini...
+        // Nanti tambah UnitProvider dan ItemProvider di sini...
       ],
       child: const MyApp(),
     ),
@@ -34,32 +40,32 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aplikasi Gudang',
-      debugShowCheckedModeBanner: false, // Menghilangkan banner debug di pojok kanan atas
+      debugShowCheckedModeBanner: false, 
       
-      // Menggunakan Tema AdminKit yang sudah kita buat
+      // Menggunakan Tema AdminKit
       theme: AdminKitTheme.themeData, 
       
       // Halaman pertama yang dibuka
       initialRoute: '/login', 
       
-      // Daftar Alamat Halaman (Route)
+      // Daftar Route (Alamat Halaman)
       routes: {
         '/login': (context) => const LoginPage(),
         '/dashboard': (context) => const DashboardPage(),
         
-        // ROUTE MASTER DATA
-        '/categories': (context) => const CategoryListPage(), // Route ini sudah aktif sekarang
+        // --- MASTER DATA ---
+        '/categories': (context) => const CategoryListPage(),
+        '/suppliers': (context) => const SupplierListPage(), // 4. Route Supplier sudah aktif
         
-        // Route Placeholder (Belum dibuat filenya)
-        '/items': (context) => const Scaffold(body: Center(child: Text("Halaman Barang (Belum Dibuat)"))),
-        '/suppliers': (context) => const Scaffold(body: Center(child: Text("Halaman Supplier (Belum Dibuat)"))),
+        // --- PLACEHOLDERS (Belum Dibuat) ---
         '/units': (context) => const Scaffold(body: Center(child: Text("Halaman Unit (Belum Dibuat)"))),
+        '/items': (context) => const Scaffold(body: Center(child: Text("Halaman Barang (Belum Dibuat)"))),
         
-        // Route Transaksi Placeholder
+        // --- TRANSAKSI ---
         '/incoming': (context) => const Scaffold(body: Center(child: Text("Barang Masuk (Belum Dibuat)"))),
         '/outgoing': (context) => const Scaffold(body: Center(child: Text("Barang Keluar (Belum Dibuat)"))),
         
-        // Route Profile Placeholder
+        // --- PROFILE ---
         '/profile': (context) => const Scaffold(body: Center(child: Text("Profile (Belum Dibuat)"))),
       },
     );
