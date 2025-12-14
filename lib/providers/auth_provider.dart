@@ -16,27 +16,50 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> login(String email, String password) async {
     _isLoading = true;
-    notifyListeners(); 
-
+    notifyListeners();
     try {
       final user = await _authService.login(email, password);
       _user = user;
       _token = user.token;
-      
-      // Simpan Token ke HP (agar nanti tidak perlu login ulang)
       final prefs = await SharedPreferences.getInstance();
-      if (_token != null) {
-        await prefs.setString('token', _token!);
-      }
-
+      if (_token != null) await prefs.setString('token', _token!);
       _isLoading = false;
-      notifyListeners(); 
+      notifyListeners();
       return true;
-      
     } catch (e) {
       _isLoading = false;
-      notifyListeners(); 
-      rethrow; 
+      notifyListeners();
+      rethrow;
     }
+  }
+
+  Future<bool> updateProfile(String name, String email, String? password) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // Panggil service
+      final updatedUser = await _authService.updateProfile(name, email, password);
+      
+      // Update data user di memori aplikasi
+      _user = updatedUser;
+      
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  // Fungsi Logout 
+  Future<void> logout() async {
+    _user = null;
+    _token = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    notifyListeners();
   }
 }
