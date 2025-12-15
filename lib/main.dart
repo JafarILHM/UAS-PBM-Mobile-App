@@ -1,40 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-// Import Core & Theme
 import 'core/theme.dart';
 
-// Import Semua Provider
+// Import Providers
 import 'providers/auth_provider.dart';
+import 'providers/item_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/supplier_provider.dart';
 import 'providers/unit_provider.dart';
-import 'providers/item_provider.dart';
 import 'providers/transaction_provider.dart';
+import 'providers/user_provider.dart'; 
 
-// Import Semua Halaman
+// Import Pages
 import 'pages/login_page.dart';
 import 'pages/dashboard_page.dart';
-import 'pages/category_list_page.dart';
-import 'pages/supplier_list_page.dart';
-import 'pages/unit_list_page.dart';
 import 'pages/item_list_page.dart';
+import 'pages/item_form_page.dart';
+import 'pages/category_list_page.dart';
+import 'pages/category_form_page.dart';
+import 'pages/supplier_list_page.dart';
+import 'pages/supplier_form_page.dart';
+import 'pages/unit_list_page.dart';
+import 'pages/unit_form_page.dart';
 import 'pages/incoming_form_page.dart';
 import 'pages/outgoing_form_page.dart';
+import 'pages/all_transactions_page.dart';
 import 'pages/profile_page.dart';
-import 'pages/transactions/all_transactions_page.dart';
+import 'pages/user_list_page.dart'; 
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        // Pendaftaran Provider (State Management)
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ItemProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => SupplierProvider()),
         ChangeNotifierProvider(create: (_) => UnitProvider()),
-        ChangeNotifierProvider(create: (_) => ItemProvider()),
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()), 
       ],
       child: const MyApp(),
     ),
@@ -48,34 +52,39 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aplikasi Gudang',
-      debugShowCheckedModeBanner: false, 
-      
-      // Menggunakan Tema AdminKit yang sudah kita buat
+      debugShowCheckedModeBanner: false,
       theme: AdminKitTheme.themeData, 
-      
-      // Halaman pertama yang dibuka saat aplikasi jalan
       initialRoute: '/login', 
-      
-      // Daftar Alamat Halaman (Routing)
       routes: {
-        // Auth
+        // Auth & Dashboard
         '/login': (context) => const LoginPage(),
-        
-        // Dashboard
         '/dashboard': (context) => const DashboardPage(),
         
-        // Master Data (CRUD)
+        // Master Data Items
         '/items': (context) => const ItemListPage(),
-        '/categories': (context) => const CategoryListPage(),
-        '/suppliers': (context) => const SupplierListPage(),
-        '/units': (context) => const UnitListPage(),
+        '/items/create': (context) => const ItemFormPage(),
         
-        // Transaksi
+        // Master Data Categories
+        '/categories': (context) => const CategoryListPage(),
+        '/categories/create': (context) => const CategoryFormPage(),
+
+        // Master Data Suppliers
+        '/suppliers': (context) => const SupplierListPage(),
+        '/suppliers/create': (context) => const SupplierFormPage(),
+
+        // Master Data Units
+        '/units': (context) => const UnitListPage(),
+        '/units/create': (context) => const UnitFormPage(),
+
+        // [BARU] Master Data Users
+        '/users': (context) => const UserListPage(),
+
+        // Transactions
+        '/transactions': (context) => const AllTransactionsPage(),
         '/incoming': (context) => const IncomingFormPage(),
         '/outgoing': (context) => const OutgoingFormPage(),
-        '/transactions': (context) => const AllTransactionsPage(),
-        
-        // User Profile
+
+        // Profile
         '/profile': (context) => const ProfilePage(),
       },
     );

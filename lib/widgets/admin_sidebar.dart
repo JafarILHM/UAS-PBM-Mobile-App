@@ -10,6 +10,7 @@ class AdminSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     // Mengambil data user yang sedang login dari Provider
     final user = Provider.of<AuthProvider>(context).user;
+    final bool isAdmin = user?.role == 'admin'; // Cek apakah admin
 
     return Drawer(
       backgroundColor: AdminKitTheme.sidebar, 
@@ -94,6 +95,10 @@ class AdminSidebar extends StatelessWidget {
           _buildMenuItem(context, 'Supplier', Icons.local_shipping, '/suppliers'),
           _buildMenuItem(context, 'Satuan (Unit)', Icons.straighten, '/units'),
 
+          // [BARU] Menu Kelola User (Hanya Admin yang bisa lihat)
+          if (isAdmin)
+            _buildMenuItem(context, 'Kelola User', Icons.people, '/users'),
+
           _buildMenuLabel("Transaksi"),
           _buildMenuItem(context, 'Barang Masuk', Icons.arrow_circle_down, '/incoming'),
           _buildMenuItem(context, 'Barang Keluar', Icons.arrow_circle_up, '/outgoing'),
@@ -119,9 +124,10 @@ class AdminSidebar extends StatelessWidget {
                   content: const Text("Apakah Anda yakin ingin keluar aplikasi?"),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Batal")),
-                    TextButton(
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       onPressed: () => Navigator.pop(ctx, true), 
-                      child: const Text("Logout", style: TextStyle(color: Colors.red)),
+                      child: const Text("Logout", style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
