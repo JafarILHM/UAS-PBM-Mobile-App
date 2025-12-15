@@ -1,59 +1,64 @@
 import 'package:flutter/material.dart';
+import '../models/transaction_model.dart';
 import '../services/transaction_service.dart';
 
 class TransactionProvider with ChangeNotifier {
   final TransactionService _service = TransactionService();
+
+  List<Transaction> _transactions = [];
   bool _isLoading = false;
 
+  List<Transaction> get transactions => _transactions;
   bool get isLoading => _isLoading;
 
-  // Submit Barang Masuk
-  Future<bool> addIncoming(int itemId, int supplierId, int qty, String date) async {
+  Future<void> fetchAllTransactions() async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      final data = {
-        'item_id': itemId,
-        'supplier_id': supplierId,
-        'qty': qty,
-        'date_in': date,
-      };
-      
-      await _service.createIncoming(data);
-      _isLoading = false;
-      notifyListeners();
-      return true;
+      _transactions = await _service.getAllTransactions();
     } catch (e) {
+      debugPrint("Error fetching transactions: $e");
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> addIncoming(
+    int itemId,
+    int supplierId,
+    int qty,
+    String dateIn,
+  ) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _service.addIncoming(itemId, supplierId, qty, dateIn);
+      // Optionally refresh transactions
+      await fetchAllTransactions();
+    } catch (e) {
+      rethrow;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      debugPrint("Error Incoming: $e");
-      rethrow; // Lempar error agar bisa ditangkap UI
     }
   }
 
-  // Submit Barang Keluar
-  Future<bool> addOutgoing(int itemId, int qty, String date, String purpose) async {
+  Future<void> addOutgoing(
+    int itemId,
+    int qty,
+    String dateOut,
+    String? purpose,
+  ) async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      final data = {
-        'item_id': itemId,
-        'qty': qty,
-        'date_out': date,
-        'purpose': purpose,
-      };
-
-      await _service.createOutgoing(data);
-      _isLoading = false;
-      notifyListeners();
-      return true;
+      await _service.addOutgoing(itemId, qty, dateOut, purpose);
+      await fetchAllTransactions();
     } catch (e) {
+      rethrow;
+    } finally {
       _isLoading = false;
       notifyListeners();
-      // Error seperti "Stok tidak cukup" akan dilempar di sini
-      rethrow; 
     }
   }
 }

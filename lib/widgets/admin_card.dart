@@ -4,14 +4,16 @@ class AdminCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final String? title;
-  final Widget? action; 
+  final Widget? action;
+  final bool expandChild;
 
   const AdminCard({
-    super.key, 
-    required this.child, 
-    this.padding, 
+    super.key,
+    required this.child,
+    this.padding,
     this.title,
-    this.action
+    this.action,
+    this.expandChild = false,
   });
 
   @override
@@ -55,10 +57,13 @@ class AdminCard extends StatelessWidget {
           ],
 
           // Isi Card
-          Padding(
-            padding: padding ?? const EdgeInsets.all(20),
-            child: child,
-          ),
+          if (expandChild)
+            Expanded(child: child)
+          else
+            Padding(
+              padding: padding ?? const EdgeInsets.all(20),
+              child: child,
+            ),
         ],
       ),
     );

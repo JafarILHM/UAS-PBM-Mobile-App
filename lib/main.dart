@@ -22,6 +22,7 @@ import 'pages/item_list_page.dart';
 import 'pages/incoming_form_page.dart';
 import 'pages/outgoing_form_page.dart';
 import 'pages/profile_page.dart';
+import 'pages/transactions/all_transactions_page.dart';
 
 void main() {
   runApp(
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
         // Transaksi
         '/incoming': (context) => const IncomingFormPage(),
         '/outgoing': (context) => const OutgoingFormPage(),
+        '/transactions': (context) => const AllTransactionsPage(),
         
         // User Profile
         '/profile': (context) => const ProfilePage(),

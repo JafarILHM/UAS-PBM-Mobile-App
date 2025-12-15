@@ -97,6 +97,7 @@ class AdminSidebar extends StatelessWidget {
           _buildMenuLabel("Transaksi"),
           _buildMenuItem(context, 'Barang Masuk', Icons.arrow_circle_down, '/incoming'),
           _buildMenuItem(context, 'Barang Keluar', Icons.arrow_circle_up, '/outgoing'),
+          _buildMenuItem(context, 'Semua Transaksi', Icons.history, '/transactions'),
 
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
