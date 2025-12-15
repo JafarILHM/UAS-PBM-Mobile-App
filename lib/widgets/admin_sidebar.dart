@@ -84,21 +84,26 @@ class AdminSidebar extends StatelessWidget {
             ),
           ),
 
-          // --- MENU NAVIGASI ---
-          
+          // ================= MENU NAVIGASI =================
+
+          // 1. MENU UTAMA
           _buildMenuLabel("Menu Utama"),
           _buildMenuItem(context, 'Dashboard', Icons.dashboard, '/dashboard'),
 
+          // 2. ADMIN AREA (Khusus Admin)
+          if (isAdmin) ...[
+            _buildMenuLabel("Admin Area"),
+            _buildMenuItem(context, 'Kelola Akun', Icons.manage_accounts, '/users'),
+          ],
+
+          // 3. MASTER DATA
           _buildMenuLabel("Master Data"),
           _buildMenuItem(context, 'Data Barang', Icons.inventory, '/items'),
           _buildMenuItem(context, 'Kategori', Icons.category, '/categories'),
+          _buildMenuItem(context, 'Satuan', Icons.straighten, '/units'),
           _buildMenuItem(context, 'Supplier', Icons.local_shipping, '/suppliers'),
-          _buildMenuItem(context, 'Satuan (Unit)', Icons.straighten, '/units'),
 
-          // [BARU] Menu Kelola User (Hanya Admin yang bisa lihat)
-          if (isAdmin)
-            _buildMenuItem(context, 'Kelola User', Icons.people, '/users'),
-
+          // 4. TRANSAKSI
           _buildMenuLabel("Transaksi"),
           _buildMenuItem(context, 'Barang Masuk', Icons.arrow_circle_down, '/incoming'),
           _buildMenuItem(context, 'Barang Keluar', Icons.arrow_circle_up, '/outgoing'),
@@ -109,14 +114,14 @@ class AdminSidebar extends StatelessWidget {
             child: Divider(color: Colors.white10),
           ),
 
+          // 5. PROFILE & LOGOUT
           _buildMenuItem(context, 'Profile Saya', Icons.person, '/profile'),
           
-          // --- TOMBOL LOGOUT ---
           ListTile(
             leading: const Icon(Icons.logout, color: AdminKitTheme.danger),
             title: const Text('Logout', style: TextStyle(color: AdminKitTheme.danger)),
             onTap: () async {
-              // 1. Tampilkan Dialog Konfirmasi
+              // Dialog Konfirmasi Logout
               final confirm = await showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
@@ -133,7 +138,6 @@ class AdminSidebar extends StatelessWidget {
                 ),
               );
 
-              // 2. Jika Ya, Lakukan Logout
               if (confirm == true && context.mounted) {
                 await Provider.of<AuthProvider>(context, listen: false).logout();
                 if (context.mounted) {
@@ -143,16 +147,16 @@ class AdminSidebar extends StatelessWidget {
             },
           ),
           
-          const SizedBox(height: 24), // Spasi bawah
+          const SizedBox(height: 24),
         ],
       ),
     );
   }
 
-  // Widget Helper untuk Label Kategori Menu (Kecil)
+  // Widget Helper untuk Label Kategori Menu
   Widget _buildMenuLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8), 
       child: Text(
         text.toUpperCase(),
         style: const TextStyle(
@@ -167,7 +171,6 @@ class AdminSidebar extends StatelessWidget {
 
   // Widget Helper untuk Item Menu
   Widget _buildMenuItem(BuildContext context, String title, IconData icon, String route) {
-    // Cek apakah route saat ini sama dengan route menu (untuk highlight aktif)
     final currentRoute = ModalRoute.of(context)?.settings.name;
     final isActive = currentRoute == route;
 
@@ -184,14 +187,14 @@ class AdminSidebar extends StatelessWidget {
           fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
         )
       ),
-      tileColor: isActive ? Colors.white.withOpacity(0.1) : null, // Highlight background jika aktif
+      tileColor: isActive ? Colors.white.withOpacity(0.1) : null,
       shape: isActive 
-          ? const Border(left: BorderSide(color: AdminKitTheme.primary, width: 3)) // Garis biru di kiri
+          ? const Border(left: BorderSide(color: AdminKitTheme.primary, width: 3)) 
           : null,
       onTap: () {
         Navigator.pop(context); // Tutup Drawer
         if (!isActive) {
-          Navigator.pushNamed(context, route); // Pindah halaman
+          Navigator.pushNamed(context, route);
         }
       },
     );

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../widgets/main_layout.dart';
 import '../../widgets/admin_card.dart';
 import '../../providers/transaction_provider.dart';
-import '../../models/transaction_model.dart'; 
+import '../../models/transaction_model.dart';
 import '../../core/theme.dart';
 
 class AllTransactionsPage extends StatefulWidget {
@@ -18,9 +18,11 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch data setelah frame pertama dirender
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TransactionProvider>(context, listen: false).fetchAllTransactions();
+      Provider.of<TransactionProvider>(
+        context,
+        listen: false,
+      ).fetchAllTransactions();
     });
   }
 
@@ -30,41 +32,42 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
 
     return MainLayout(
       title: 'Semua Transaksi',
-      body: AdminCard(
-        title: "Riwayat Transaksi",
-        // expandChild: true, // Hapus atau set false jika bikin overflow
-        padding: const EdgeInsets.all(0),
-        child: provider.isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : provider.transactions.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Center(child: Text('Belum ada transaksi.')),
-                  )
-                : ListView.separated(
-                    shrinkWrap: true, // Agar tidak error height unlimited
-                    physics: const NeverScrollableScrollPhysics(), // Scroll ikut MainLayout
-                    itemCount: provider.transactions.length,
-                    separatorBuilder: (context, index) => const Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final tx = provider.transactions[index];
-                      return _buildTransactionTile(tx);
-                    },
-                  ),
+      body: SingleChildScrollView(
+        child: AdminCard(
+          title: "Riwayat Transaksi",
+          expandChild: false, 
+          padding: const EdgeInsets.all(0),
+          child: provider.isLoading
+              ? const SizedBox(
+                  height: 200, 
+                  child: Center(child: CircularProgressIndicator())
+                )
+              : provider.transactions.isEmpty
+                  ? const SizedBox(
+                      height: 100,
+                      child: Center(child: Text('Belum ada transaksi.'))
+                    )
+                  : ListView.separated(
+                      // 3. Tambahkan shrinkWrap dan physics agar ListView tidak konflik dengan ScrollView utama
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: provider.transactions.length,
+                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final tx = provider.transactions[index];
+                        return _buildTransactionTile(tx);
+                      },
+                    ),
+        ),
       ),
     );
   }
 
   Widget _buildTransactionTile(Transaction tx) {
     bool isIncoming = tx.type == "in";
-    
-    // Format quantity
     String qty = isIncoming ? '+ ${tx.quantity}' : '- ${tx.quantity}';
     
-    // Format tanggal (Pastikan field createdAt di model Transaction ada dan bertipe DateTime)
+    // Safety check untuk format tanggal
     String date = '-';
     try {
        date = DateFormat('d MMM yyyy, HH:mm').format(tx.createdAt);
@@ -76,6 +79,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       child: Row(
         children: [
+          // Icon Background
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -89,6 +93,8 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
             ),
           ),
           const SizedBox(width: 16),
+          
+          // Nama Barang & Status
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +111,8 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
               ],
             ),
           ),
+          
+          // Jumlah & Tanggal
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -113,7 +121,9 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: isIncoming ? AdminKitTheme.success : AdminKitTheme.danger,
+                  color: isIncoming
+                      ? AdminKitTheme.success
+                      : AdminKitTheme.danger,
                 ),
               ),
               const SizedBox(height: 4),
