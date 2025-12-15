@@ -8,8 +8,8 @@ class MainLayout extends StatelessWidget {
   final Widget? floatingActionButton;
 
   const MainLayout({
-    super.key, 
-    required this.title, 
+    super.key,
+    required this.title,
     required this.body,
     this.floatingActionButton,
   });
@@ -20,20 +20,15 @@ class MainLayout extends StatelessWidget {
       backgroundColor: AdminKitTheme.background, // Background abu-abu muda
       appBar: AppBar(
         title: Text(
-          title, 
+          title,
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
         actions: [
-          // Ikon lonceng notifikasi ala AdminKit
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
-          ),
           // Ikon User
           IconButton(
             icon: const Icon(Icons.person_outline),
             onPressed: () {
-               Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/profile');
             },
           ),
           const SizedBox(width: 8),
@@ -56,7 +51,7 @@ class MainLayout extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Konten Halaman Sebenarnya
               body,
             ],
