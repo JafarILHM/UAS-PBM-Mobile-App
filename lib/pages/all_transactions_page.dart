@@ -32,33 +32,27 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
 
     return MainLayout(
       title: 'Semua Transaksi',
-      body: SingleChildScrollView(
-        child: AdminCard(
-          title: "Riwayat Transaksi",
-          expandChild: false, 
-          padding: const EdgeInsets.all(0),
-          child: provider.isLoading
-              ? const SizedBox(
-                  height: 200, 
-                  child: Center(child: CircularProgressIndicator())
-                )
-              : provider.transactions.isEmpty
-                  ? const SizedBox(
-                      height: 100,
-                      child: Center(child: Text('Belum ada transaksi.'))
-                    )
-                  : ListView.separated(
-                      // 3. Tambahkan shrinkWrap dan physics agar ListView tidak konflik dengan ScrollView utama
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: provider.transactions.length,
-                      separatorBuilder: (context, index) => const Divider(height: 1),
-                      itemBuilder: (context, index) {
-                        final tx = provider.transactions[index];
-                        return _buildTransactionTile(tx);
-                      },
-                    ),
-        ),
+      body: AdminCard(
+        title: "Riwayat Transaksi",
+        expandChild: true,
+        padding: const EdgeInsets.all(0),
+        child: provider.isLoading
+            ? const SizedBox(
+                height: 200,
+                child: Center(child: CircularProgressIndicator()))
+            : provider.transactions.isEmpty
+                ? const SizedBox(
+                    height: 100,
+                    child: Center(child: Text('Belum ada transaksi.')))
+                : ListView.separated(
+                    itemCount: provider.transactions.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final tx = provider.transactions[index];
+                      return _buildTransactionTile(tx);
+                    },
+                  ),
       ),
     );
   }

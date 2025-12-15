@@ -80,7 +80,8 @@ class _UserListPageState extends State<UserListPage> {
                       },
                       itemBuilder: (ctx) => [
                         const PopupMenuItem(value: 'edit', child: Text("Edit")),
-                        const PopupMenuItem(value: 'delete', child: Text("Hapus", style: TextStyle(color: Colors.red))),
+                        if (user.role != 'admin')
+                          const PopupMenuItem(value: 'delete', child: Text("Hapus", style: TextStyle(color: Colors.red))),
                       ],
                     ),
                   ),
