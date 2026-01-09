@@ -4,7 +4,7 @@ import '../services/user_service.dart';
 
 class UserProvider with ChangeNotifier {
   final UserService _service = UserService();
-  
+
   List<User> _users = [];
   bool _isLoading = false;
 
@@ -28,7 +28,12 @@ class UserProvider with ChangeNotifier {
   }
 
   // Add Data
-  Future<bool> addUser(String name, String email, String password, String role) async {
+  Future<bool> addUser(
+    String name,
+    String email,
+    String password,
+    String role,
+  ) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -44,7 +49,13 @@ class UserProvider with ChangeNotifier {
   }
 
   // Update Data
-  Future<bool> updateUser(int id, String name, String email, String? password, String role) async {
+  Future<bool> updateUser(
+    int id,
+    String name,
+    String email,
+    String? password,
+    String role,
+  ) async {
     _isLoading = true;
     notifyListeners();
     try {

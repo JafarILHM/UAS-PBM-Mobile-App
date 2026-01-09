@@ -22,16 +22,33 @@ class AllTransactionsPage extends StatefulWidget {
 
 class _AllTransactionsPageState extends State<AllTransactionsPage> {
   bool _isExporting = false;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TransactionProvider>(
-        context,
-        listen: false,
-      ).fetchAllTransactions();
+      _fetchTransactions();
     });
+  }
+
+  Future<void> _fetchTransactions() async {
+    // Reset error on fetch
+    if (mounted) {
+      setState(() {
+        _error = null;
+      });
+    }
+    try {
+      await Provider.of<TransactionProvider>(context, listen: false)
+          .fetchAllTransactions();
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+        });
+      }
+    }
   }
 
   Future<void> _exportToExcel() async {
@@ -52,32 +69,37 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
       final url = Uri.parse('${ApiConfig.baseUrl}/export/transactions');
       final response = await http.get(
         url,
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
+        // Generate a unique filename with a timestamp
+        final timestamp =
+            DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now());
+        final filename = 'transactions_$timestamp.xlsx';
+
         // Save the file
         final bytes = response.bodyBytes;
         final directory = await getDownloadsDirectory();
-        final path = '${directory!.path}/transactions.xlsx';
+        final path = '${directory!.path}/$filename';
         final file = File(path);
         await file.writeAsBytes(bytes);
 
         // Show success message and open the file
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('File saved to: $path')),
-        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('File saved to: $path')));
         OpenFile.open(path);
       } else {
         throw Exception('Failed to download file: ${response.statusCode}');
       }
     } catch (e) {
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error exporting to Excel: $e')),
-      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error exporting to Excel: $e')));
     } finally {
       setState(() {
         _isExporting = false;
@@ -88,6 +110,52 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TransactionProvider>(context);
+
+    Widget bodyChild;
+    if (provider.isLoading && _error == null) {
+      bodyChild = const SizedBox(
+        height: 200,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    } else if (_error != null) {
+      bodyChild = SizedBox(
+        height: 200,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Gagal memuat transaksi.\nSilakan periksa koneksi Anda dan coba lagi.\n\nError: $_error',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _fetchTransactions,
+                child: const Text('Coba Lagi'),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (provider.transactions.isEmpty) {
+      bodyChild = const SizedBox(
+        height: 100,
+        child: Center(child: Text('Belum ada transaksi.')),
+      );
+    } else {
+      bodyChild = ListView.separated(
+        itemCount: provider.transactions.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final tx = provider.transactions[index];
+          return _buildTransactionTile(tx);
+        },
+      );
+    }
 
     return MainLayout(
       title: 'Semua Transaksi',
@@ -101,24 +169,7 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
               ),
         expandChild: true,
         padding: const EdgeInsets.all(0),
-        child: provider.isLoading
-            ? const SizedBox(
-                height: 200,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : provider.transactions.isEmpty
-            ? const SizedBox(
-                height: 100,
-                child: Center(child: Text('Belum ada transaksi.')),
-              )
-            : ListView.separated(
-                itemCount: provider.transactions.length,
-                separatorBuilder: (context, index) => const Divider(height: 1),
-                itemBuilder: (context, index) {
-                  final tx = provider.transactions[index];
-                  return _buildTransactionTile(tx);
-                },
-              ),
+        child: bodyChild,
       ),
     );
   }
@@ -144,8 +195,8 @@ class _AllTransactionsPageState extends State<AllTransactionsPage> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: isIncoming
-                  ? AdminKitTheme.success.withOpacity(0.1)
-                  : AdminKitTheme.danger.withOpacity(0.1),
+                  ? AdminKitTheme.success.withAlpha((255 * 0.1).round())
+                  : AdminKitTheme.danger.withAlpha((255 * 0.1).round()),
               shape: BoxShape.circle,
             ),
             child: Icon(

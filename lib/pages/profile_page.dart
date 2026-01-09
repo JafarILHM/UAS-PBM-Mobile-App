@@ -41,14 +41,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Profil berhasil diperbarui"), backgroundColor: AdminKitTheme.success),
+          const SnackBar(
+            content: Text("Profil berhasil diperbarui"),
+            backgroundColor: AdminKitTheme.success,
+          ),
         );
-        _passwordController.clear(); 
+        _passwordController.clear();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Gagal: ${e.toString().replaceAll('Exception:', '')}"), backgroundColor: AdminKitTheme.danger),
+          SnackBar(
+            content: Text(
+              "Gagal: ${e.toString().replaceAll('Exception:', '')}",
+            ),
+            backgroundColor: AdminKitTheme.danger,
+          ),
         );
       }
     }
@@ -67,25 +75,37 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Nama Lengkap", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Nama Lengkap",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(border: OutlineInputBorder()),
-                validator: (val) => val == null || val.isEmpty ? "Wajib diisi" : null,
+                validator: (val) =>
+                    val == null || val.isEmpty ? "Wajib diisi" : null,
               ),
               const SizedBox(height: 16),
 
-              const Text("Email", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Email",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(border: OutlineInputBorder()),
-                validator: (val) => val == null || !val.contains('@') ? "Email tidak valid" : null,
+                validator: (val) => val == null || !val.contains('@')
+                    ? "Email tidak valid"
+                    : null,
               ),
               const SizedBox(height: 16),
 
-              const Text("Password Baru (Opsional)", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Password Baru (Opsional)",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _passwordController,
@@ -103,12 +123,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _save,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AdminKitTheme.primary, 
-                    foregroundColor: Colors.white
+                    backgroundColor: AdminKitTheme.primary,
+                    foregroundColor: Colors.white,
                   ),
-                  child: isLoading 
-                    ? const CircularProgressIndicator(color: Colors.white) 
-                    : const Text("Simpan Perubahan"),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("Simpan Perubahan"),
                 ),
               ),
             ],

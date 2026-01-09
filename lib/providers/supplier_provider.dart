@@ -4,7 +4,7 @@ import '../services/supplier_service.dart';
 
 class SupplierProvider with ChangeNotifier {
   final SupplierService _service = SupplierService();
-  
+
   List<Supplier> _suppliers = [];
   bool _isLoading = false;
 

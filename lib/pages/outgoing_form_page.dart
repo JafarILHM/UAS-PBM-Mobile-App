@@ -19,7 +19,7 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
   final _qtyController = TextEditingController();
   final _purposeController = TextEditingController();
   final _dateController = TextEditingController(
-    text: DateFormat('yyyy-MM-dd').format(DateTime.now())
+    text: DateFormat('yyyy-MM-dd').format(DateTime.now()),
   );
 
   int? _selectedItemId;
@@ -35,12 +35,17 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedItemId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Barang wajib dipilih")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Barang wajib dipilih")));
       return;
     }
 
     try {
-      await Provider.of<TransactionProvider>(context, listen: false).addOutgoing(
+      await Provider.of<TransactionProvider>(
+        context,
+        listen: false,
+      ).addOutgoing(
         _selectedItemId!,
         int.parse(_qtyController.text),
         _dateController.text,
@@ -50,14 +55,27 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Barang Keluar berhasil dicatat!"), backgroundColor: AdminKitTheme.success),
+          const SnackBar(
+            content: Text("Barang Keluar berhasil dicatat!"),
+            backgroundColor: AdminKitTheme.success,
+          ),
         );
-        Provider.of<ItemProvider>(context, listen: false).fetchItems(); // Update stok
+        Provider.of<ItemProvider>(
+          context,
+          listen: false,
+        ).fetchItems(); // Update stok
       }
     } catch (e) {
       if (mounted) {
         // Tampilkan pesan error (misal: Stok tidak cukup)
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Gagal: ${e.toString().replaceAll('Exception:', '')}"), backgroundColor: AdminKitTheme.danger));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Gagal: ${e.toString().replaceAll('Exception:', '')}",
+            ),
+            backgroundColor: AdminKitTheme.danger,
+          ),
+        );
       }
     }
   }
@@ -76,12 +94,18 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Tanggal Keluar", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Tanggal Keluar",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _dateController,
                 readOnly: true,
-                decoration: const InputDecoration(border: OutlineInputBorder(), suffixIcon: Icon(Icons.calendar_today)),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
                 onTap: () async {
                   DateTime? picked = await showDatePicker(
                     context: context,
@@ -90,16 +114,21 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
                     lastDate: DateTime(2100),
                   );
                   if (picked != null) {
-                    _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+                    _dateController.text = DateFormat(
+                      'yyyy-MM-dd',
+                    ).format(picked);
                   }
                 },
               ),
               const SizedBox(height: 16),
 
-              const Text("Pilih Barang", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Pilih Barang",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               DropdownButtonFormField<int>(
-                value: _selectedItemId,
+                initialValue: _selectedItemId,
                 decoration: const InputDecoration(border: OutlineInputBorder()),
                 items: itemProvider.items.map((item) {
                   return DropdownMenuItem(
@@ -111,21 +140,34 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
               ),
               const SizedBox(height: 16),
 
-              const Text("Jumlah Keluar", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Jumlah Keluar",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _qtyController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "0"),
-                validator: (val) => val == null || val.isEmpty ? "Wajib diisi" : null,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "0",
+                ),
+                validator: (val) =>
+                    val == null || val.isEmpty ? "Wajib diisi" : null,
               ),
               const SizedBox(height: 16),
 
-              const Text("Tujuan / Keterangan", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Tujuan / Keterangan",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _purposeController,
-                decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "Misal: Produksi, Rusak, dll"),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Misal: Produksi, Rusak, dll",
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -134,12 +176,15 @@ class _OutgoingFormPageState extends State<OutgoingFormPage> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _submit,
-                  style: ElevatedButton.styleFrom(backgroundColor: AdminKitTheme.danger, foregroundColor: Colors.white),
-                  child: isLoading 
-                    ? const CircularProgressIndicator(color: Colors.white) 
-                    : const Text("Simpan Transaksi"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AdminKitTheme.danger,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("Simpan Transaksi"),
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -9,7 +9,7 @@ import '../core/theme.dart';
 import '../models/item_model.dart';
 
 class ItemFormPage extends StatefulWidget {
-  final Item? item; 
+  final Item? item;
 
   const ItemFormPage({super.key, this.item});
 
@@ -19,7 +19,7 @@ class ItemFormPage extends StatefulWidget {
 
 class _ItemFormPageState extends State<ItemFormPage> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Controllers
   final _skuController = TextEditingController();
   final _nameController = TextEditingController();
@@ -56,14 +56,16 @@ class _ItemFormPageState extends State<ItemFormPage> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_selectedCategoryId == null || _selectedUnitId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Kategori dan Satuan wajib dipilih!")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Kategori dan Satuan wajib dipilih!")),
+      );
       return;
     }
 
     setState(() => _isSaving = true);
 
     final provider = Provider.of<ItemProvider>(context, listen: false);
-    
+
     final data = Item(
       id: widget.item?.id ?? 0,
       sku: _skuController.text,
@@ -84,9 +86,19 @@ class _ItemFormPageState extends State<ItemFormPage> {
     setState(() => _isSaving = false);
     if (success && mounted) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Barang berhasil disimpan"), backgroundColor: AdminKitTheme.success));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Barang berhasil disimpan"),
+          backgroundColor: AdminKitTheme.success,
+        ),
+      );
     } else if (mounted) {
-       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Gagal menyimpan (Cek duplikasi SKU)"), backgroundColor: AdminKitTheme.danger));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Gagal menyimpan (Cek duplikasi SKU)"),
+          backgroundColor: AdminKitTheme.danger,
+        ),
+      );
     }
   }
 
@@ -107,18 +119,32 @@ class _ItemFormPageState extends State<ItemFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInput("Kode SKU / Barcode", _skuController, "Scan atau ketik manual"),
+              _buildInput(
+                "Kode SKU / Barcode",
+                _skuController,
+                "Scan atau ketik manual",
+              ),
               const SizedBox(height: 16),
-              
-              _buildInput("Nama Barang", _nameController, "Contoh: Laptop Asus"),
+
+              _buildInput(
+                "Nama Barang",
+                _nameController,
+                "Contoh: Laptop Asus",
+              ),
               const SizedBox(height: 16),
 
               // DROPDOWN KATEGORI
-              const Text("Kategori", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Kategori",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               DropdownButtonFormField<int>(
-                value: _selectedCategoryId,
-                decoration: const InputDecoration(border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12)),
+                initialValue: _selectedCategoryId,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
                 hint: const Text("Pilih Kategori"),
                 items: categoryProvider.categories.map((cat) {
                   return DropdownMenuItem(value: cat.id, child: Text(cat.name));
@@ -128,14 +154,23 @@ class _ItemFormPageState extends State<ItemFormPage> {
               const SizedBox(height: 16),
 
               // DROPDOWN UNIT
-              const Text("Satuan (Unit)", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Satuan (Unit)",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 8),
               DropdownButtonFormField<int>(
-                value: _selectedUnitId,
-                decoration: const InputDecoration(border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12)),
+                initialValue: _selectedUnitId,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
                 hint: const Text("Pilih Satuan"),
                 items: unitProvider.units.map((unit) {
-                  return DropdownMenuItem(value: unit.id, child: Text("${unit.name} (${unit.symbol})"));
+                  return DropdownMenuItem(
+                    value: unit.id,
+                    child: Text("${unit.name} (${unit.symbol})"),
+                  );
                 }).toList(),
                 onChanged: (val) => setState(() => _selectedUnitId = val),
               ),
@@ -143,9 +178,23 @@ class _ItemFormPageState extends State<ItemFormPage> {
 
               Row(
                 children: [
-                  Expanded(child: _buildInput("Stok Awal", _stockController, "0", isNumber: true)),
+                  Expanded(
+                    child: _buildInput(
+                      "Stok Awal",
+                      _stockController,
+                      "0",
+                      isNumber: true,
+                    ),
+                  ),
                   const SizedBox(width: 16),
-                  Expanded(child: _buildInput("Stok Minimum", _minStockController, "5", isNumber: true)),
+                  Expanded(
+                    child: _buildInput(
+                      "Stok Minimum",
+                      _minStockController,
+                      "5",
+                      isNumber: true,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -156,10 +205,15 @@ class _ItemFormPageState extends State<ItemFormPage> {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: _isSaving ? null : _save,
-                  style: ElevatedButton.styleFrom(backgroundColor: AdminKitTheme.primary, foregroundColor: Colors.white),
-                  child: _isSaving ? const CircularProgressIndicator(color: Colors.white) : const Text("Simpan Data Barang"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AdminKitTheme.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: _isSaving
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("Simpan Data Barang"),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -167,7 +221,12 @@ class _ItemFormPageState extends State<ItemFormPage> {
     );
   }
 
-  Widget _buildInput(String label, TextEditingController controller, String hint, {bool isNumber = false}) {
+  Widget _buildInput(
+    String label,
+    TextEditingController controller,
+    String hint, {
+    bool isNumber = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

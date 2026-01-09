@@ -34,7 +34,7 @@ class UnitService {
     final url = Uri.parse('${ApiConfig.baseUrl}/units');
     final headers = await _getHeaders();
     final response = await http.post(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode(unit.toJson()),
     );
@@ -46,7 +46,7 @@ class UnitService {
     final url = Uri.parse('${ApiConfig.baseUrl}/units/${unit.id}');
     final headers = await _getHeaders();
     final response = await http.put(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode(unit.toJson()),
     );

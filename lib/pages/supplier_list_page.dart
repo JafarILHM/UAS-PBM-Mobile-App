@@ -17,8 +17,11 @@ class _SupplierListPageState extends State<SupplierListPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => 
-      Provider.of<SupplierProvider>(context, listen: false).fetchSuppliers()
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => Provider.of<SupplierProvider>(
+        context,
+        listen: false,
+      ).fetchSuppliers(),
     );
   }
 
@@ -32,7 +35,10 @@ class _SupplierListPageState extends State<SupplierListPage> {
         backgroundColor: AdminKitTheme.primary,
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const SupplierFormPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SupplierFormPage()),
+          );
         },
       ),
       body: AdminCard(
@@ -48,38 +54,74 @@ class _SupplierListPageState extends State<SupplierListPage> {
                   final item = provider.suppliers[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      item.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (item.contact != null) 
-                          Text("📞 ${item.contact}", style: const TextStyle(fontSize: 12)),
-                        if (item.address != null) 
-                          Text("📍 ${item.address}", style: const TextStyle(fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        if (item.contact != null)
+                          Text(
+                            "📞 ${item.contact}",
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        if (item.address != null)
+                          Text(
+                            "📍 ${item.address}",
+                            style: const TextStyle(fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                       ],
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit, color: AdminKitTheme.primary, size: 20),
+                          icon: const Icon(
+                            Icons.edit,
+                            color: AdminKitTheme.primary,
+                            size: 20,
+                          ),
                           onPressed: () {
-                             Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierFormPage(supplier: item)));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SupplierFormPage(supplier: item),
+                              ),
+                            );
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete, color: AdminKitTheme.danger, size: 20),
+                          icon: const Icon(
+                            Icons.delete,
+                            color: AdminKitTheme.danger,
+                            size: 20,
+                          ),
                           onPressed: () async {
                             final confirm = await showDialog(
-                              context: context, 
+                              context: context,
                               builder: (ctx) => AlertDialog(
                                 title: const Text("Hapus Supplier?"),
-                                content: const Text("Yakin ingin menghapus data ini?"),
+                                content: const Text(
+                                  "Yakin ingin menghapus data ini?",
+                                ),
                                 actions: [
-                                  TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Batal")),
-                                  TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Hapus", style: TextStyle(color: Colors.red))),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text("Batal"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                    child: const Text(
+                                      "Hapus",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
                                 ],
-                              )
+                              ),
                             );
                             if (confirm == true) {
                               await provider.deleteSupplier(item.id);

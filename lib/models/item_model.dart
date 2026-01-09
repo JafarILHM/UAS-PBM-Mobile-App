@@ -9,7 +9,7 @@ class Item {
   final int? stockMinimum; // Bisa null
   final int categoryId;
   final int unitId;
-  
+
   // Objek Relasi (untuk ditampilkan di List)
   final Category? category;
   final Unit? unit;
@@ -35,7 +35,9 @@ class Item {
       stockMinimum: json['stock_minimum'],
       categoryId: int.parse(json['category_id'].toString()),
       unitId: int.parse(json['unit_id'].toString()),
-      category: json['category'] != null ? Category.fromJson(json['category']) : null,
+      category: json['category'] != null
+          ? Category.fromJson(json['category'])
+          : null,
       unit: json['unit'] != null ? Unit.fromJson(json['unit']) : null,
     );
   }

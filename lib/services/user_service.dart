@@ -34,10 +34,15 @@ class UserService {
   }
 
   // 2. Tambah User Baru
-  Future<bool> addUser(String name, String email, String password, String role) async {
+  Future<bool> addUser(
+    String name,
+    String email,
+    String password,
+    String role,
+  ) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/users');
     final headers = await _getHeaders();
-    
+
     final body = jsonEncode({
       'name': name,
       'email': email,
@@ -56,7 +61,13 @@ class UserService {
   }
 
   // 3. Update User
-  Future<bool> updateUser(int id, String name, String email, String? password, String role) async {
+  Future<bool> updateUser(
+    int id,
+    String name,
+    String email,
+    String? password,
+    String role,
+  ) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/users/$id');
     final headers = await _getHeaders();
 
@@ -70,7 +81,11 @@ class UserService {
       data['password'] = password;
     }
 
-    final response = await http.put(url, headers: headers, body: jsonEncode(data));
+    final response = await http.put(
+      url,
+      headers: headers,
+      body: jsonEncode(data),
+    );
 
     if (response.statusCode == 200) {
       return true;

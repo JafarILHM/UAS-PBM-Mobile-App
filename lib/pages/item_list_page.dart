@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:inventory_app/core/api_config.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,8 +26,9 @@ class _ItemListPageState extends State<ItemListPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-        () => Provider.of<ItemProvider>(context, listen: false).fetchItems());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => Provider.of<ItemProvider>(context, listen: false).fetchItems(),
+    );
   }
 
   Future<void> _exportToExcel() async {
@@ -47,32 +49,38 @@ class _ItemListPageState extends State<ItemListPage> {
       final url = Uri.parse('${ApiConfig.baseUrl}/export/items');
       final response = await http.get(
         url,
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
+        headers: {'Authorization': 'Bearer $token'},
       );
 
       if (response.statusCode == 200) {
+        // Generate a unique filename with a timestamp
+        final timestamp = DateFormat(
+          'yyyy-MM-dd_HH-mm-ss',
+        ).format(DateTime.now());
+        final filename = 'items_$timestamp.xlsx';
+
         // Save the file
         final bytes = response.bodyBytes;
         final directory = await getDownloadsDirectory();
-        final path = '${directory!.path}/items.xlsx';
+        final path = '${directory!.path}/$filename';
         final file = File(path);
         await file.writeAsBytes(bytes);
 
         // Show success message and open the file
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('File saved to: $path')),
-        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('File saved to: $path')));
         OpenFile.open(path);
       } else {
         throw Exception('Failed to download file: ${response.statusCode}');
       }
     } catch (e) {
+      if (!mounted) return;
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error exporting to Excel: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error exporting to Excel: $e')));
     } finally {
       setState(() {
         _isExporting = false;
@@ -91,9 +99,9 @@ class _ItemListPageState extends State<ItemListPage> {
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const ItemFormPage()));
+            context,
+            MaterialPageRoute(builder: (context) => const ItemFormPage()),
+          );
         },
       ),
       body: AdminCard(
@@ -116,21 +124,30 @@ class _ItemListPageState extends State<ItemListPage> {
 
                   // Logic Warna Stok: Merah jika stok <= minimum
                   bool isLowStock = item.stock <= (item.stockMinimum ?? 5);
-                  Color stockColor =
-                      isLowStock ? AdminKitTheme.danger : AdminKitTheme.success;
+                  Color stockColor = isLowStock
+                      ? AdminKitTheme.danger
+                      : AdminKitTheme.success;
 
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(item.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      item.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("SKU: ${item.sku}",
-                            style: const TextStyle(fontSize: 12)),
-                        Text(item.category?.name ?? "-",
-                            style: const TextStyle(
-                                fontSize: 12, color: AdminKitTheme.secondary)),
+                        Text(
+                          "SKU: ${item.sku}",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                          item.category?.name ?? "-",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AdminKitTheme.secondary,
+                          ),
+                        ),
                       ],
                     ),
                     trailing: Row(
@@ -139,19 +156,23 @@ class _ItemListPageState extends State<ItemListPage> {
                         // Badge Stok
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: stockColor.withOpacity(0.1),
+                            color: stockColor.withAlpha((255 * 0.1).round()),
                             borderRadius: BorderRadius.circular(4),
-                            border:
-                                Border.all(color: stockColor.withOpacity(0.5)),
+                            border: Border.all(
+                              color: stockColor.withAlpha((255 * 0.5).round()),
+                            ),
                           ),
                           child: Text(
                             "${item.stock} ${item.unit?.symbol ?? ''}",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: stockColor,
-                                fontSize: 12),
+                              fontWeight: FontWeight.bold,
+                              color: stockColor,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -161,41 +182,75 @@ class _ItemListPageState extends State<ItemListPage> {
                           onSelected: (value) async {
                             if (value == 'edit') {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ItemFormPage(item: item)));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ItemFormPage(item: item),
+                                ),
+                              );
                             } else if (value == 'delete') {
                               // Dialog Konfirmasi Hapus
                               final confirm = await showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                        title: const Text("Hapus Barang?"),
-                                        content: const Text(
-                                            "Yakin hapus? History transaksi barang ini mungkin ikut terhapus."),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(ctx, false),
-                                              child: const Text("Batal")),
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(ctx, true),
-                                              child: const Text("Hapus",
-                                                  style: TextStyle(
-                                                      color: Colors.red))),
-                                        ],
-                                      ));
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text("Hapus Barang?"),
+                                  content: const Text(
+                                    "Yakin hapus? History transaksi barang ini mungkin ikut terhapus.",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, false),
+                                      child: const Text("Batal"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(ctx, true),
+                                      child: const Text(
+                                        "Hapus",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
                               if (confirm == true) {
                                 await provider.deleteItem(item.id);
                               }
                             }
                           },
                           itemBuilder: (context) => [
-                            const PopupMenuItem(value: 'edit', child: Row(children: [Icon(Icons.edit, size: 16), SizedBox(width: 8), Text("Edit")])),
-                            const PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete, size: 16, color: Colors.red), SizedBox(width: 8), Text("Hapus", style: TextStyle(color: Colors.red))])),
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, size: 16),
+                                  SizedBox(width: 8),
+                                  Text("Edit"),
+                                ],
+                              ),
+                            ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete,
+                                    size: 16,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Hapus",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
-                          child: const Icon(Icons.more_vert, color: AdminKitTheme.secondary),
+                          child: const Icon(
+                            Icons.more_vert,
+                            color: AdminKitTheme.secondary,
+                          ),
                         ),
                       ],
                     ),

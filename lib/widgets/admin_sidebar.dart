@@ -13,7 +13,7 @@ class AdminSidebar extends StatelessWidget {
     final bool isAdmin = user?.role == 'admin'; // Cek apakah admin
 
     return Drawer(
-      backgroundColor: AdminKitTheme.sidebar, 
+      backgroundColor: AdminKitTheme.sidebar,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -27,14 +27,18 @@ class AdminSidebar extends StatelessWidget {
               ),
               child: Row(
                 children: const [
-                  Icon(Icons.inventory_2, color: AdminKitTheme.primary, size: 32),
+                  Icon(
+                    Icons.inventory_2,
+                    color: AdminKitTheme.primary,
+                    size: 32,
+                  ),
                   SizedBox(width: 12),
                   Text(
                     'Gudang App',
                     style: TextStyle(
-                      color: Colors.white, 
-                      fontSize: 22, 
-                      fontWeight: FontWeight.bold
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
@@ -48,7 +52,7 @@ class AdminSidebar extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withAlpha((255 * 0.05).round()),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -57,8 +61,13 @@ class AdminSidebar extends StatelessWidget {
                     backgroundColor: AdminKitTheme.primary,
                     radius: 20,
                     child: Text(
-                      user?.name.isNotEmpty == true ? user!.name[0].toUpperCase() : "U",
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      user?.name.isNotEmpty == true
+                          ? user!.name[0].toUpperCase()
+                          : "U",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -67,18 +76,26 @@ class AdminSidebar extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user?.name ?? "User", 
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                          maxLines: 1, overflow: TextOverflow.ellipsis,
+                          user?.name ?? "User",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          user?.email ?? "-", 
-                          style: const TextStyle(color: Colors.white54, fontSize: 12),
-                          maxLines: 1, overflow: TextOverflow.ellipsis,
+                          user?.email ?? "-",
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -93,7 +110,12 @@ class AdminSidebar extends StatelessWidget {
           // 2. ADMIN AREA (Khusus Admin)
           if (isAdmin) ...[
             _buildMenuLabel("Admin Area"),
-            _buildMenuItem(context, 'Kelola Akun', Icons.manage_accounts, '/users'),
+            _buildMenuItem(
+              context,
+              'Kelola Akun',
+              Icons.manage_accounts,
+              '/users',
+            ),
           ],
 
           // 3. MASTER DATA
@@ -101,13 +123,33 @@ class AdminSidebar extends StatelessWidget {
           _buildMenuItem(context, 'Data Barang', Icons.inventory, '/items'),
           _buildMenuItem(context, 'Kategori', Icons.category, '/categories'),
           _buildMenuItem(context, 'Satuan', Icons.straighten, '/units'),
-          _buildMenuItem(context, 'Supplier', Icons.local_shipping, '/suppliers'),
+          _buildMenuItem(
+            context,
+            'Supplier',
+            Icons.local_shipping,
+            '/suppliers',
+          ),
 
           // 4. TRANSAKSI
           _buildMenuLabel("Transaksi"),
-          _buildMenuItem(context, 'Barang Masuk', Icons.arrow_circle_down, '/incoming'),
-          _buildMenuItem(context, 'Barang Keluar', Icons.arrow_circle_up, '/outgoing'),
-          _buildMenuItem(context, 'Semua Transaksi', Icons.history, '/transactions'),
+          _buildMenuItem(
+            context,
+            'Barang Masuk',
+            Icons.arrow_circle_down,
+            '/incoming',
+          ),
+          _buildMenuItem(
+            context,
+            'Barang Keluar',
+            Icons.arrow_circle_up,
+            '/outgoing',
+          ),
+          _buildMenuItem(
+            context,
+            'Semua Transaksi',
+            Icons.history,
+            '/transactions',
+          ),
 
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -116,37 +158,57 @@ class AdminSidebar extends StatelessWidget {
 
           // 5. PROFILE & LOGOUT
           _buildMenuItem(context, 'Profile Saya', Icons.person, '/profile'),
-          
+
           ListTile(
             leading: const Icon(Icons.logout, color: AdminKitTheme.danger),
-            title: const Text('Logout', style: TextStyle(color: AdminKitTheme.danger)),
+            title: const Text(
+              'Logout',
+              style: TextStyle(color: AdminKitTheme.danger),
+            ),
             onTap: () async {
               // Dialog Konfirmasi Logout
               final confirm = await showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: const Text("Konfirmasi Logout"),
-                  content: const Text("Apakah Anda yakin ingin keluar aplikasi?"),
+                  content: const Text(
+                    "Apakah Anda yakin ingin keluar aplikasi?",
+                  ),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Batal")),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text("Batal"),
+                    ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                      onPressed: () => Navigator.pop(ctx, true), 
-                      child: const Text("Logout", style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text(
+                        "Logout",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
               );
 
               if (confirm == true && context.mounted) {
-                await Provider.of<AuthProvider>(context, listen: false).logout();
+                await Provider.of<AuthProvider>(
+                  context,
+                  listen: false,
+                ).logout();
                 if (context.mounted) {
-                  Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
                 }
               }
             },
           ),
-          
+
           const SizedBox(height: 24),
         ],
       ),
@@ -156,7 +218,7 @@ class AdminSidebar extends StatelessWidget {
   // Widget Helper untuk Label Kategori Menu
   Widget _buildMenuLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8), 
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
       child: Text(
         text.toUpperCase(),
         style: const TextStyle(
@@ -170,26 +232,33 @@ class AdminSidebar extends StatelessWidget {
   }
 
   // Widget Helper untuk Item Menu
-  Widget _buildMenuItem(BuildContext context, String title, IconData icon, String route) {
+  Widget _buildMenuItem(
+    BuildContext context,
+    String title,
+    IconData icon,
+    String route,
+  ) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
     final isActive = currentRoute == route;
 
     return ListTile(
       leading: Icon(
-        icon, 
+        icon,
         color: isActive ? Colors.white : Colors.white70,
         size: 20,
       ),
       title: Text(
-        title, 
+        title,
         style: TextStyle(
           color: isActive ? Colors.white : Colors.white70,
           fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-        )
+        ),
       ),
-      tileColor: isActive ? Colors.white.withOpacity(0.1) : null,
-      shape: isActive 
-          ? const Border(left: BorderSide(color: AdminKitTheme.primary, width: 3)) 
+      tileColor: isActive ? Colors.white.withAlpha((255 * 0.1).round()) : null,
+      shape: isActive
+          ? const Border(
+              left: BorderSide(color: AdminKitTheme.primary, width: 3),
+            )
           : null,
       onTap: () {
         Navigator.pop(context); // Tutup Drawer

@@ -35,24 +35,25 @@ class MainLayout extends StatelessWidget {
         ],
       ),
       drawer: const AdminSidebar(), // Sidebar Otomatis
-                  body: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF495057),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Expanded(child: body),
-                      ],
-                    ),
-                  ),      floatingActionButton: floatingActionButton,
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF495057),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Expanded(child: body),
+          ],
+        ),
+      ),
+      floatingActionButton: floatingActionButton,
     );
   }
 }

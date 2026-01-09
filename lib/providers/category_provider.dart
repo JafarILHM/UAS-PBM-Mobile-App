@@ -4,7 +4,7 @@ import '../services/category_service.dart';
 
 class CategoryProvider with ChangeNotifier {
   final CategoryService _service = CategoryService();
-  
+
   List<Category> _categories = [];
   bool _isLoading = false;
 
@@ -19,7 +19,7 @@ class CategoryProvider with ChangeNotifier {
     try {
       _categories = await _service.getCategories();
     } catch (e) {
-      print("Error fetching categories: $e");
+      debugPrint("Error fetching categories: $e");
     }
 
     _isLoading = false;

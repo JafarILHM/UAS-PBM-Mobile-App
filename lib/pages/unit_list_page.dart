@@ -17,8 +17,8 @@ class _UnitListPageState extends State<UnitListPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => 
-      Provider.of<UnitProvider>(context, listen: false).fetchUnits()
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => Provider.of<UnitProvider>(context, listen: false).fetchUnits(),
     );
   }
 
@@ -32,7 +32,10 @@ class _UnitListPageState extends State<UnitListPage> {
         backgroundColor: AdminKitTheme.primary,
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const UnitFormPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UnitFormPage()),
+          );
         },
       ),
       body: AdminCard(
@@ -48,39 +51,77 @@ class _UnitListPageState extends State<UnitListPage> {
                   final item = provider.units[index];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      item.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // Menampilkan Simbol sebagai Badge
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: AdminKitTheme.secondary.withOpacity(0.1),
+                            color: AdminKitTheme.secondary.withAlpha(
+                              (255 * 0.1).round(),
+                            ),
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Text(item.symbol, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          child: Text(
+                            item.symbol,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 12),
                         IconButton(
-                          icon: const Icon(Icons.edit, color: AdminKitTheme.primary, size: 20),
+                          icon: const Icon(
+                            Icons.edit,
+                            color: AdminKitTheme.primary,
+                            size: 20,
+                          ),
                           onPressed: () {
-                             Navigator.push(context, MaterialPageRoute(builder: (context) => UnitFormPage(unit: item)));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UnitFormPage(unit: item),
+                              ),
+                            );
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete, color: AdminKitTheme.danger, size: 20),
+                          icon: const Icon(
+                            Icons.delete,
+                            color: AdminKitTheme.danger,
+                            size: 20,
+                          ),
                           onPressed: () async {
                             final confirm = await showDialog(
-                              context: context, 
+                              context: context,
                               builder: (ctx) => AlertDialog(
                                 title: const Text("Hapus Satuan?"),
-                                content: const Text("Yakin ingin menghapus data ini?"),
+                                content: const Text(
+                                  "Yakin ingin menghapus data ini?",
+                                ),
                                 actions: [
-                                  TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Batal")),
-                                  TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text("Hapus", style: TextStyle(color: Colors.red))),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text("Batal"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                    child: const Text(
+                                      "Hapus",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
                                 ],
-                              )
+                              ),
                             );
                             if (confirm == true) {
                               await provider.deleteUnit(item.id);

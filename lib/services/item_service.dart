@@ -32,7 +32,7 @@ class ItemService {
     final url = Uri.parse('${ApiConfig.baseUrl}/items');
     final headers = await _getHeaders();
     final response = await http.post(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode(item.toJson()),
     );
@@ -43,7 +43,7 @@ class ItemService {
     final url = Uri.parse('${ApiConfig.baseUrl}/items/${item.id}');
     final headers = await _getHeaders();
     final response = await http.put(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode(item.toJson()),
     );

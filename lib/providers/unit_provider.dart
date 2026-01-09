@@ -4,7 +4,7 @@ import '../services/unit_service.dart';
 
 class UnitProvider with ChangeNotifier {
   final UnitService _service = UnitService();
-  
+
   List<Unit> _units = [];
   bool _isLoading = false;
 

@@ -33,17 +33,25 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> updateProfile(String name, String email, String? password) async {
+  Future<bool> updateProfile(
+    String name,
+    String email,
+    String? password,
+  ) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       // Panggil service
-      final updatedUser = await _authService.updateProfile(name, email, password);
-      
+      final updatedUser = await _authService.updateProfile(
+        name,
+        email,
+        password,
+      );
+
       // Update data user di memori aplikasi
       _user = updatedUser;
-      
+
       _isLoading = false;
       notifyListeners();
       return true;
@@ -54,7 +62,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Fungsi Logout 
+  // Fungsi Logout
   Future<void> logout() async {
     _user = null;
     _token = null;

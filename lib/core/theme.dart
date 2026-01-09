@@ -7,7 +7,7 @@ class AdminKitTheme {
   static const Color success = Color(0xFF1CBB8C);
   static const Color danger = Color(0xFFDC3545);
   static const Color warning = Color(0xFFFCB92C);
-  
+
   // Warna Layout
   static const Color background = Color(0xFFF5F7FB);
   static const Color sidebar = Color(0xFF222E3C);
@@ -21,10 +21,8 @@ class AdminKitTheme {
     fontWeight: FontWeight.w600,
   );
 
-  static TextStyle get subTitleStyle => const TextStyle(
-    color: secondary,
-    fontSize: 14,
-  );
+  static TextStyle get subTitleStyle =>
+      const TextStyle(color: secondary, fontSize: 14);
 
   // Theme Data untuk Material App
   static ThemeData get themeData => ThemeData(
@@ -36,17 +34,17 @@ class AdminKitTheme {
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,
-      foregroundColor: textDark, 
-      elevation: 0, 
+      foregroundColor: textDark,
+      elevation: 0,
       iconTheme: IconThemeData(color: textDark),
     ),
-    
-    cardTheme: CardThemeData( 
+
+    cardTheme: CardThemeData(
       color: cardColor,
-      elevation: 0, 
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
     ),
-    
+
     useMaterial3: true,
   );
 }

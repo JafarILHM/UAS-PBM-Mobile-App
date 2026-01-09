@@ -4,7 +4,7 @@ import '../services/item_service.dart';
 
 class ItemProvider with ChangeNotifier {
   final ItemService _service = ItemService();
-  
+
   List<Item> _items = [];
   bool _isLoading = false;
 

@@ -33,7 +33,7 @@ class _UnitFormPageState extends State<UnitFormPage> {
   void _save() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isSaving = true);
-    
+
     final provider = Provider.of<UnitProvider>(context, listen: false);
     final data = Unit(
       id: widget.unit?.id ?? 0,
@@ -52,7 +52,10 @@ class _UnitFormPageState extends State<UnitFormPage> {
     if (success && mounted) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Data berhasil disimpan"), backgroundColor: AdminKitTheme.success),
+        const SnackBar(
+          content: Text("Data berhasil disimpan"),
+          backgroundColor: AdminKitTheme.success,
+        ),
       );
     }
   }
@@ -72,14 +75,21 @@ class _UnitFormPageState extends State<UnitFormPage> {
             children: [
               _buildInput("Nama Satuan", _nameController, "Contoh: Kilogram"),
               const SizedBox(height: 16),
-              _buildInput("Simbol / Singkatan", _symbolController, "Contoh: kg"),
+              _buildInput(
+                "Simbol / Singkatan",
+                _symbolController,
+                "Contoh: kg",
+              ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Batal", style: TextStyle(color: AdminKitTheme.secondary)),
+                    child: const Text(
+                      "Batal",
+                      style: TextStyle(color: AdminKitTheme.secondary),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -88,12 +98,18 @@ class _UnitFormPageState extends State<UnitFormPage> {
                       backgroundColor: AdminKitTheme.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: _isSaving 
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white))
-                      : const Text("Simpan"),
+                    child: _isSaving
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text("Simpan"),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -101,7 +117,11 @@ class _UnitFormPageState extends State<UnitFormPage> {
     );
   }
 
-  Widget _buildInput(String label, TextEditingController controller, String hint) {
+  Widget _buildInput(
+    String label,
+    TextEditingController controller,
+    String hint,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

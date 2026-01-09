@@ -19,7 +19,7 @@ class _UserFormPageState extends State<UserFormPage> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   final TextEditingController _passwordController = TextEditingController();
-  
+
   String _selectedRole = 'staff';
   bool _isLoading = false;
 
@@ -46,7 +46,7 @@ class _UserFormPageState extends State<UserFormPage> {
 
     setState(() => _isLoading = true);
     final provider = Provider.of<UserProvider>(context, listen: false);
-    
+
     try {
       bool success;
       if (widget.user == null) {
@@ -63,7 +63,9 @@ class _UserFormPageState extends State<UserFormPage> {
           widget.user!.id,
           _nameController.text,
           _emailController.text,
-          _passwordController.text.isEmpty ? null : _passwordController.text, // Password opsional
+          _passwordController.text.isEmpty
+              ? null
+              : _passwordController.text, // Password opsional
           _selectedRole,
         );
       }
@@ -71,13 +73,21 @@ class _UserFormPageState extends State<UserFormPage> {
       if (success && mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Data berhasil disimpan"), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text("Data berhasil disimpan"),
+            backgroundColor: Colors.green,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Gagal: ${e.toString().replaceAll('Exception:', '')}"), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text(
+              "Gagal: ${e.toString().replaceAll('Exception:', '')}",
+            ),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -99,30 +109,52 @@ class _UserFormPageState extends State<UserFormPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Nama Lengkap", style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  "Nama Lengkap",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "Nama User"),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Nama User",
+                  ),
                   validator: (val) => val!.isEmpty ? "Nama wajib diisi" : null,
                 ),
                 const SizedBox(height: 16),
 
-                const Text("Email", style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  "Email",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "email@example.com"),
-                  validator: (val) => val!.isEmpty || !val.contains('@') ? "Email tidak valid" : null,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "email@example.com",
+                  ),
+                  validator: (val) => val!.isEmpty || !val.contains('@')
+                      ? "Email tidak valid"
+                      : null,
                 ),
                 const SizedBox(height: 16),
 
-                Text(isEdit ? "Password (Kosongkan jika tidak diganti)" : "Password", style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  isEdit
+                      ? "Password (Kosongkan jika tidak diganti)"
+                      : "Password",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "******"),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "******",
+                  ),
                   validator: (val) {
                     if (!isEdit && (val == null || val.length < 6)) {
                       return "Password minimal 6 karakter";
@@ -132,14 +164,25 @@ class _UserFormPageState extends State<UserFormPage> {
                 ),
                 const SizedBox(height: 16),
 
-                const Text("Role / Jabatan", style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  "Role / Jabatan",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 5),
                 DropdownButtonFormField<String>(
-                  value: _selectedRole,
-                  decoration: const InputDecoration(border: OutlineInputBorder()),
+                  initialValue: _selectedRole,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
                   items: const [
-                    DropdownMenuItem(value: 'staff', child: Text("Staff Gudang")),
-                    DropdownMenuItem(value: 'admin', child: Text("Admin (Kepala)")),
+                    DropdownMenuItem(
+                      value: 'staff',
+                      child: Text("Staff Gudang"),
+                    ),
+                    DropdownMenuItem(
+                      value: 'admin',
+                      child: Text("Admin (Kepala)"),
+                    ),
                   ],
                   onChanged: (val) => setState(() => _selectedRole = val!),
                 ),
@@ -154,9 +197,12 @@ class _UserFormPageState extends State<UserFormPage> {
                       backgroundColor: AdminKitTheme.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: _isLoading 
-                      ? const CircularProgressIndicator(color: Colors.white) 
-                      : const Text("Simpan Data", style: TextStyle(fontSize: 16)),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            "Simpan Data",
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
                 ),
               ],

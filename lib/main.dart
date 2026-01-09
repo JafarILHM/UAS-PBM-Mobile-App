@@ -9,7 +9,7 @@ import 'providers/category_provider.dart';
 import 'providers/supplier_provider.dart';
 import 'providers/unit_provider.dart';
 import 'providers/transaction_provider.dart';
-import 'providers/user_provider.dart'; 
+import 'providers/user_provider.dart';
 
 // Import Pages
 import 'pages/login_page.dart';
@@ -26,7 +26,7 @@ import 'pages/incoming_form_page.dart';
 import 'pages/outgoing_form_page.dart';
 import 'pages/all_transactions_page.dart';
 import 'pages/profile_page.dart';
-import 'pages/user_list_page.dart'; 
+import 'pages/user_list_page.dart';
 
 void main() {
   runApp(
@@ -38,7 +38,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SupplierProvider()),
         ChangeNotifierProvider(create: (_) => UnitProvider()),
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()), 
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),
     ),
@@ -53,17 +53,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Aplikasi Gudang',
       debugShowCheckedModeBanner: false,
-      theme: AdminKitTheme.themeData, 
-      initialRoute: '/login', 
+      theme: AdminKitTheme.themeData,
+      initialRoute: '/login',
       routes: {
         // Auth & Dashboard
         '/login': (context) => const LoginPage(),
         '/dashboard': (context) => const DashboardPage(),
-        
+
         // Master Data Items
         '/items': (context) => const ItemListPage(),
         '/items/create': (context) => const ItemFormPage(),
-        
+
         // Master Data Categories
         '/categories': (context) => const CategoryListPage(),
         '/categories/create': (context) => const CategoryFormPage(),

@@ -18,9 +18,11 @@ class TransactionProvider with ChangeNotifier {
       _transactions = await _service.getAllTransactions();
     } catch (e) {
       debugPrint("Error fetching transactions: $e");
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-    _isLoading = false;
-    notifyListeners();
   }
 
   Future<void> addIncoming(

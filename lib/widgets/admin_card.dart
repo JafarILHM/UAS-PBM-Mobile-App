@@ -25,10 +25,10 @@ class AdminCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha((255 * 0.05).round()),
             blurRadius: 10,
             offset: const Offset(0, 2),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -60,10 +60,7 @@ class AdminCard extends StatelessWidget {
           if (expandChild)
             Expanded(child: child)
           else
-            Padding(
-              padding: padding ?? const EdgeInsets.all(20),
-              child: child,
-            ),
+            Padding(padding: padding ?? const EdgeInsets.all(20), child: child),
         ],
       ),
     );

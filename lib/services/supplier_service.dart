@@ -34,11 +34,11 @@ class SupplierService {
     final url = Uri.parse('${ApiConfig.baseUrl}/suppliers');
     final headers = await _getHeaders();
     final response = await http.post(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode(supplier.toJson()),
     );
-    return response.statusCode == 200; 
+    return response.statusCode == 200;
   }
 
   // PUT (Update)
@@ -46,7 +46,7 @@ class SupplierService {
     final url = Uri.parse('${ApiConfig.baseUrl}/suppliers/${supplier.id}');
     final headers = await _getHeaders();
     final response = await http.put(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode(supplier.toJson()),
     );

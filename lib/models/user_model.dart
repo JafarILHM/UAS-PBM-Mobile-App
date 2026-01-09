@@ -3,7 +3,7 @@ class User {
   final String name;
   final String email;
   final String role;
-  final String? token; 
+  final String? token;
 
   User({
     required this.id,
@@ -20,7 +20,7 @@ class User {
       name: json['name'],
       email: json['email'],
       role: json['role'],
-      token: token, 
+      token: token,
     );
   }
 }

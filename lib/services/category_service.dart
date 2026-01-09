@@ -19,7 +19,7 @@ class CategoryService {
   Future<List<Category>> getCategories() async {
     final url = Uri.parse('${ApiConfig.baseUrl}/categories');
     final headers = await _getHeaders();
-    
+
     final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
@@ -36,9 +36,9 @@ class CategoryService {
   Future<bool> createCategory(String name) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/categories');
     final headers = await _getHeaders();
-    
+
     final response = await http.post(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode({'name': name}),
     );
@@ -50,9 +50,9 @@ class CategoryService {
   Future<bool> updateCategory(int id, String name) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/categories/$id');
     final headers = await _getHeaders();
-    
+
     final response = await http.put(
-      url, 
+      url,
       headers: headers,
       body: jsonEncode({'name': name}),
     );
@@ -64,7 +64,7 @@ class CategoryService {
   Future<bool> deleteCategory(int id) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/categories/$id');
     final headers = await _getHeaders();
-    
+
     final response = await http.delete(url, headers: headers);
 
     return response.statusCode == 200;

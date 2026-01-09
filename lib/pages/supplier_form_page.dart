@@ -7,7 +7,7 @@ import '../core/theme.dart';
 import '../models/supplier_model.dart';
 
 class SupplierFormPage extends StatefulWidget {
-  final Supplier? supplier; 
+  final Supplier? supplier;
 
   const SupplierFormPage({super.key, this.supplier});
 
@@ -36,12 +36,12 @@ class _SupplierFormPageState extends State<SupplierFormPage> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSaving = true);
-    
+
     final provider = Provider.of<SupplierProvider>(context, listen: false);
-    
+
     // Buat objek dari inputan
     final data = Supplier(
-      id: widget.supplier?.id ?? 0, 
+      id: widget.supplier?.id ?? 0,
       name: _nameController.text,
       contact: _contactController.text,
       address: _addressController.text,
@@ -59,14 +59,19 @@ class _SupplierFormPageState extends State<SupplierFormPage> {
     if (success && mounted) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Data berhasil disimpan"), backgroundColor: AdminKitTheme.success),
+        const SnackBar(
+          content: Text("Data berhasil disimpan"),
+          backgroundColor: AdminKitTheme.success,
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    String title = widget.supplier == null ? "Tambah Supplier" : "Edit Supplier";
+    String title = widget.supplier == null
+        ? "Tambah Supplier"
+        : "Edit Supplier";
 
     return MainLayout(
       title: title,
@@ -79,21 +84,26 @@ class _SupplierFormPageState extends State<SupplierFormPage> {
               // NAMA
               _buildInput("Nama Supplier", _nameController, true),
               const SizedBox(height: 16),
-              
+
               // KONTAK
               _buildInput("Kontak (HP/Telp)", _contactController, false),
               const SizedBox(height: 16),
-              
+
               // ALAMAT
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Alamat", style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text(
+                    "Alamat",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _addressController,
-                    maxLines: 3, 
-                    decoration: const InputDecoration(border: OutlineInputBorder()),
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ],
               ),
@@ -105,7 +115,10 @@ class _SupplierFormPageState extends State<SupplierFormPage> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Batal", style: TextStyle(color: AdminKitTheme.secondary)),
+                    child: const Text(
+                      "Batal",
+                      style: TextStyle(color: AdminKitTheme.secondary),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -114,12 +127,18 @@ class _SupplierFormPageState extends State<SupplierFormPage> {
                       backgroundColor: AdminKitTheme.primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: _isSaving 
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white))
-                      : const Text("Simpan"),
+                    child: _isSaving
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text("Simpan"),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -128,7 +147,11 @@ class _SupplierFormPageState extends State<SupplierFormPage> {
   }
 
   // Helper Widget agar kode tidak berulang
-  Widget _buildInput(String label, TextEditingController controller, bool isRequired) {
+  Widget _buildInput(
+    String label,
+    TextEditingController controller,
+    bool isRequired,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

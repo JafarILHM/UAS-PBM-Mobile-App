@@ -18,8 +18,8 @@ class _UserListPageState extends State<UserListPage> {
   void initState() {
     super.initState();
     // Load data saat pertama kali dibuka
-    Future.microtask(() => 
-      Provider.of<UserProvider>(context, listen: false).fetchUsers()
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => Provider.of<UserProvider>(context, listen: false).fetchUsers(),
     );
   }
 
@@ -47,16 +47,24 @@ class _UserListPageState extends State<UserListPage> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
-                    title: Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text(
+                      user.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(user.email),
                         const SizedBox(height: 4),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
-                            color: user.role == 'admin' ? Colors.green.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+                            color: user.role == 'admin'
+                                ? Colors.green.withAlpha((255 * 0.1).round())
+                                : Colors.blue.withAlpha((255 * 0.1).round()),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -64,7 +72,9 @@ class _UserListPageState extends State<UserListPage> {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: user.role == 'admin' ? Colors.green : Colors.blue,
+                              color: user.role == 'admin'
+                                  ? Colors.green
+                                  : Colors.blue,
                             ),
                           ),
                         ),
@@ -73,15 +83,26 @@ class _UserListPageState extends State<UserListPage> {
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
                         if (value == 'edit') {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => UserFormPage(user: user)));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UserFormPage(user: user),
+                            ),
+                          );
                         } else if (value == 'delete') {
-                          _confirmDelete(context, user);
+                          _confirmDelete(context, user, userProvider);
                         }
                       },
                       itemBuilder: (ctx) => [
                         const PopupMenuItem(value: 'edit', child: Text("Edit")),
                         if (user.role != 'admin')
-                          const PopupMenuItem(value: 'delete', child: Text("Hapus", style: TextStyle(color: Colors.red))),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                              "Hapus",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -92,39 +113,49 @@ class _UserListPageState extends State<UserListPage> {
         backgroundColor: AdminKitTheme.primary,
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const UserFormPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const UserFormPage()),
+          );
         },
       ),
     );
   }
 
-  void _confirmDelete(BuildContext context, User user) {
-    showDialog(
+  void _confirmDelete(
+    BuildContext context,
+    User user,
+    UserProvider provider,
+  ) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final confirm = await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text("Hapus User"),
         content: Text("Yakin ingin menghapus ${user.name}?"),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Batal")),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text("Batal"),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () async {
-              Navigator.pop(ctx);
-              try {
-                await Provider.of<UserProvider>(context, listen: false).deleteUser(user.id);
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("User berhasil dihapus")));
-                }
-              } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
-                }
-              }
-            },
+            onPressed: () => Navigator.pop(ctx, true),
             child: const Text("Hapus", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
+
+    if (confirm == true) {
+      try {
+        await provider.deleteUser(user.id);
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text("User berhasil dihapus")),
+        );
+      } catch (e) {
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text("Error: $e")));
+      }
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/api_config.dart';
 import '../models/user_model.dart';
 
@@ -19,18 +19,19 @@ class AuthService {
       throw Exception(data['message'] ?? 'Gagal Login');
     }
   }
-  
-  Future<User> updateProfile(String name, String email, String? password) async {
+
+  Future<User> updateProfile(
+    String name,
+    String email,
+    String? password,
+  ) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/profile/update');
-    
+
     // Ambil token dari SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
-    final body = {
-      'name': name,
-      'email': email,
-    };
+    final body = {'name': name, 'email': email};
 
     // Password hanya dikirim jika diisi
     if (password != null && password.isNotEmpty) {
